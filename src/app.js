@@ -5,6 +5,7 @@ import morgan from 'morgan';
 import compression from 'compression';
 import dotenv from 'dotenv';
 import routes from './routes/index.js';
+// import { testConnection } from './config/database.js';
 
 dotenv.config(); // ho tro lay thong tin tu file .env
 
@@ -28,6 +29,9 @@ if(process.env.NODE_ENV === 'development') {
 } else {
     app.use(morgan('combined'));
 }
+
+// test connect to database
+// await testConnection();
 
 //Routes
 app.use('/api/v1', routes);
