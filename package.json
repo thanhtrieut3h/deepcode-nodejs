@@ -1,0 +1,32 @@
+{
+  "name": "backendnodejs",
+  "version": "1.0.0",
+  "description": "rest api",
+  "keywords": [
+    "backend",
+    "API",
+    "Nodejs"
+  ],
+  "license": "ISC",
+  "author": "DeepCode",
+  "type": "module",
+  "main": "server.js",
+  "scripts": {
+    "dev": "nodemon src/server.js",
+    "start": "node src/server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "compression": "^1.8.1",
+    "cors": "^2.8.6",
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "helmet": "^8.3.0",
+    "morgan": "^1.11.0"
+  },
+  "devDependencies": {
+    "eslint": "^9.39.5",
+    "nodemon": "^3.1.14",
+    "prettier": "^3.9.6"
+  }
+}
