@@ -1,14 +1,11 @@
+import userModel from "../models/UserModel.js";
 
-export const getAllUser = (req, res, next) => {
-    const { id, name, price } = req.query || {};
+export const getAllUser = async (req, res, next) => {
     try {
+        const users = await userModel.getAllDataUser();
         res.status(200).json({
             success: true,
-            data: [
-                { id: 1, name: "Teo", age: 20 },
-                { id: 2, name: "Ty", age: 21 }
-            ],
-            product: { id, name, price }
+            data: users
         });
     } catch (error) {
         next(error);
