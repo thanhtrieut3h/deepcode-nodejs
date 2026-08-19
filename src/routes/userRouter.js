@@ -5,4 +5,4 @@ const router = express.Router();
 
 router.get('/all-user', getAllUser);
 
-export default router;``
+export default router;
