@@ -40,3 +40,17 @@ export const validateRegister = (data) => {
         errors
     }
 }
+// kiem tra du lieu dang nhap
+export const validateLogin = (data) => {
+    const errors = [];
+    if(!data.username){
+        errors.push("username is required");
+    }
+    if(!data.password){
+        errors.push("password is required");
+    }
+    return {
+        isValid: errors.length === 0,
+        errors
+    }
+}

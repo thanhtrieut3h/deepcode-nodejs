@@ -1,5 +1,6 @@
 import userModel from "../models/UserModel.js";
-import { validateRegister } from "../validations/AuthValidation.js";
+import { validateRegister, validateLogin } from "../validations/AuthValidation.js";
+import { generateToken } from "../services/jwtService.js";
 
 export const register = async (req, res, next) => {
     try {
@@ -47,6 +48,77 @@ export const register = async (req, res, next) => {
             data: {
                 user
             }
+        });
+    } catch (error) {
+        next(error);
+    }
+}
+
+export const login = async (req, res, next) => {
+    try {
+        // validate login
+        const { isValid, errors } = validateLogin(req.body); // dung method post de truy cap
+        if(!isValid){
+            return res.status(400).json({
+                success: false,
+                message: "Validation failed",
+                errors
+            });
+        }
+        // find user
+        const user = await userModel.findUserByUsername(req.body.username);
+        if(!user){
+            return res.status(401).json({
+                success: false,
+                message: "Account invalid"
+            });
+        }
+        // kiem tra mat khau
+        const checkPassword = await userModel.verifyPassword(req.body.password, user.password);
+        if(!checkPassword){
+            return res.status(401).json({
+                success: false,
+                message: "Account invalid"
+            });
+        }
+        // cap nhat lai cot "last_login" trong database
+        await userModel.updateLastLogin(user.id);
+        // delete password
+        delete user.password;
+        // ma hoa token chua thong tin nguoi dung vua dang nhap
+        const token = generateToken({
+            id: user.id,
+            username: user.username,
+            email: user.email,
+            role: user.role
+        });
+
+        return res.status(200).json({
+            success: true,
+            message: "login successful",
+            data: {
+                user,
+                token
+            }
+        });
+
+    } catch (error) {
+        next(error)
+    }
+}
+
+export const getCurrentUser = (req, res, next) => {
+    try {
+        const user = userModel.findUserById(req.user.id);
+        if(!user){
+            return res.status(404).json({
+                success: false,
+                message: "User not found"
+            });
+        }
+        return res.status(200).json({
+            success: true,
+            data: user
         });
     } catch (error) {
         next(error);

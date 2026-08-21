@@ -14,7 +14,7 @@ const createUser = async (userData) => {
         // tien hanh insert data vao database
         const [result] = await pool.execute(
             'INSERT INTO `users`(`username`,`password`,`email`,`full_name`,`phone`,`role`) VALUES (?,?,?,?,?,?)',
-            [username, password, email, fullName, phone, role]
+            [username, hashedPassword, email, fullName, phone, role]
         );
         // tra ve ID cua user vua duoc them moi
         console.log(`ID user inserted ${result.insertId}`);
@@ -57,11 +57,27 @@ const getAllDataUser = async () => {
     return rows || null;
 }
 
+const verifyPassword = (password, hashedPassword) => {
+    // password: la mat khau that nguoi dung dang su dung
+    // hashedPassword: mat khau that cua nguoi nhung da duoc ma hoa va luu trong database
+    // kiem tra 2 mat khau nay co khop nhau hay ko ?
+    return bcrypt.compare(password, hashedPassword);
+}
+
+const updateLastLogin = async (id) => {
+    await pool.execute(
+        "UPDATE `users` SET `last_login` = NOW() WHERE `id` = ?",
+        [id]
+    );
+}
+
 const userModel = {
     createUser,
     findUserById,
     findUserByUsername,
     findUserByEmail,
-    getAllDataUser
+    getAllDataUser,
+    verifyPassword,
+    updateLastLogin
 }
 export default userModel;
